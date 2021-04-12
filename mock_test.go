@@ -30,48 +30,49 @@ import (
 	"context"
 	"errors"
 	"testing"
-	
+
+	opt "github.com/googleapis/gax-go/v2"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
 func TestMockClient_Close(t *testing.T) {
-	AddSecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+	AddSecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.AddSecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
-	GetSecretFunc = func(ctx context.Context, req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
+	GetSecretFunc = func(ctx context.Context, req *secretmanagerpb.GetSecretRequest, opts ...opt.CallOption) (*secretmanagerpb.Secret, error) {
 		return nil, errors.New("secret does not exist")
 	}
-	GetSecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+	GetSecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.GetSecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
-	CreateSecretFunc = func(ctx context.Context, req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error) {
+	CreateSecretFunc = func(ctx context.Context, req *secretmanagerpb.CreateSecretRequest, opts ...opt.CallOption) (*secretmanagerpb.Secret, error) {
 		return secretPositiveReturn, nil
 	}
-	DestroySecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+	DestroySecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.DestroySecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
-	DisableSecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+	DisableSecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.DisableSecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
-	EnableSecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+	EnableSecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.EnableSecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
-	AccessSecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error) {
+	AccessSecretVersionFunc = func(ctx context.Context, req *secretmanagerpb.AccessSecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.AccessSecretVersionResponse, error) {
 		return &secretmanagerpb.AccessSecretVersionResponse{
 			Name:    "projects/myProjects/secrets/mySecrets/versions/latest",
 			Payload: &secretmanagerpb.SecretPayload{Data: []byte("mySecret")},
 		}, nil
 	}
 	type fields struct {
-		GetSecretFunc            func(ctx context.Context, req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error)
-		AccessSecretVersionFunc  func(ctx context.Context, req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error)
-		DestroySecretVersionFunc func(ctx context.Context, req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
-		CreateSecretFunc         func(ctx context.Context, req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error)
-		AddSecretVersionFunc     func(ctx context.Context, req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
-		DeleteSecretFunc         func(ctx context.Context, req *secretmanagerpb.DeleteSecretRequest) error
-		GetSecretVersionFunc     func(ctx context.Context, req *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
-		DisableSecretVersionFunc func(ctx context.Context, req *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
-		EnableSecretVersionFunc  func(ctx context.Context, req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
+		GetSecretFunc            func(ctx context.Context, req *secretmanagerpb.GetSecretRequest, opts ...opt.CallOption) (*secretmanagerpb.Secret, error)
+		AccessSecretVersionFunc  func(ctx context.Context, req *secretmanagerpb.AccessSecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.AccessSecretVersionResponse, error)
+		DestroySecretVersionFunc func(ctx context.Context, req *secretmanagerpb.DestroySecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.SecretVersion, error)
+		CreateSecretFunc         func(ctx context.Context, req *secretmanagerpb.CreateSecretRequest, opts ...opt.CallOption) (*secretmanagerpb.Secret, error)
+		AddSecretVersionFunc     func(ctx context.Context, req *secretmanagerpb.AddSecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.SecretVersion, error)
+		DeleteSecretFunc         func(ctx context.Context, req *secretmanagerpb.DeleteSecretRequest, opts ...opt.CallOption) error
+		GetSecretVersionFunc     func(ctx context.Context, req *secretmanagerpb.GetSecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.SecretVersion, error)
+		DisableSecretVersionFunc func(ctx context.Context, req *secretmanagerpb.DisableSecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.SecretVersion, error)
+		EnableSecretVersionFunc  func(ctx context.Context, req *secretmanagerpb.EnableSecretVersionRequest, opts ...opt.CallOption) (*secretmanagerpb.SecretVersion, error)
 	}
 	tests := []struct {
 		name    string
