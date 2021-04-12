@@ -32,6 +32,7 @@ import (
 	"reflect"
 	"testing"
 
+	opt "github.com/googleapis/gax-go/v2"
 	pb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
@@ -63,12 +64,12 @@ func TestClient_AddNewSecretVersion(t *testing.T) {
 		}
 	}
 
-	AddSecretVersionFunc = func(ctx context.Context, req *pb.AddSecretVersionRequest) (*pb.SecretVersion, error) {
+	AddSecretVersionFunc = func(ctx context.Context, req *pb.AddSecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
 	t.Run("Success", addNewSecretTest(nil, "mysecret", "myproject", []byte("a new test"), secretVersionPositiveReturn, false))
 
-	AddSecretVersionFunc = func(ctx context.Context, req *pb.AddSecretVersionRequest) (*pb.SecretVersion, error) {
+	AddSecretVersionFunc = func(ctx context.Context, req *pb.AddSecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return nil, errors.New("failed to add secret version")
 	}
 	t.Run("Failure", addNewSecretTest(nil, "mysecret", "myproject", []byte("a new test"), nil, true))
@@ -91,20 +92,20 @@ func TestClient_CreateEmptySecret(t *testing.T) {
 			}
 		}
 	}
-	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error) {
+	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return nil, errors.New("secret does not exist")
 	}
-	CreateSecretFunc = func(ctx context.Context, req *pb.CreateSecretRequest) (*pb.Secret, error) {
+	CreateSecretFunc = func(ctx context.Context, req *pb.CreateSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return secretPositiveReturn, nil
 	}
 	t.Run("Success", createEmptySecretTest(nil, "mySecret", "myProject", secretPositiveReturn, false))
 
-	CreateSecretFunc = func(ctx context.Context, req *pb.CreateSecretRequest) (*pb.Secret, error) {
+	CreateSecretFunc = func(ctx context.Context, req *pb.CreateSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return nil, errors.New("failed to create Secret")
 	}
 	t.Run("Failure", createEmptySecretTest(nil, "mySecret", "myProject", nil, true))
 
-	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error) {
+	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return secretPositiveReturn, nil
 	}
 	t.Run("Failure", createEmptySecretTest(nil, "mySecret", "myProject", nil, true))
@@ -127,31 +128,31 @@ func TestClient_CreateSecretWithData(t *testing.T) {
 			}
 		}
 	}
-	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error) {
+	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return nil, errors.New("secret does not exist")
 	}
-	CreateSecretFunc = func(ctx context.Context, req *pb.CreateSecretRequest) (*pb.Secret, error) {
+	CreateSecretFunc = func(ctx context.Context, req *pb.CreateSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return secretPositiveReturn, nil
 	}
-	AddSecretVersionFunc = func(ctx context.Context, req *pb.AddSecretVersionRequest) (*pb.SecretVersion, error) {
+	AddSecretVersionFunc = func(ctx context.Context, req *pb.AddSecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
 	t.Run("Success", createSecretWithDataTest(nil, "mySecret", []byte("a new test"), "myProject", secretVersionPositiveReturn, false))
 
-	AddSecretVersionFunc = func(ctx context.Context, req *pb.AddSecretVersionRequest) (*pb.SecretVersion, error) {
+	AddSecretVersionFunc = func(ctx context.Context, req *pb.AddSecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return nil, errors.New("failed to add secret version")
 	}
 	t.Run("Success", createSecretWithDataTest(nil, "mySecret", []byte("a new test"), "myProject", nil, true))
 
-	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error) {
+	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return secretPositiveReturn, nil
 	}
 	t.Run("FailSecretExists", createSecretWithDataTest(nil, "mySecret", []byte("a new test"), "myProject", nil, true))
 
-	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error) {
+	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return nil, errors.New("secret does not exist")
 	}
-	CreateSecretFunc = func(ctx context.Context, req *pb.CreateSecretRequest) (*pb.Secret, error) {
+	CreateSecretFunc = func(ctx context.Context, req *pb.CreateSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return nil, errors.New("failed to create secret")
 	}
 	t.Run("FailCreateSecret", createSecretWithDataTest(nil, "mySecret", []byte("a new test"), "myProject", nil, true))
@@ -175,12 +176,12 @@ func TestClient_DeleteSecretVersion(t *testing.T) {
 		}
 	}
 
-	DestroySecretVersionFunc = func(ctx context.Context, req *pb.DestroySecretVersionRequest) (*pb.SecretVersion, error) {
+	DestroySecretVersionFunc = func(ctx context.Context, req *pb.DestroySecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
 	t.Run("Success", deleteSecretVersionTest(nil, "mySecrets", "myProjects", "", secretVersionPositiveReturn, false))
 
-	DestroySecretVersionFunc = func(ctx context.Context, req *pb.DestroySecretVersionRequest) (*pb.SecretVersion, error) {
+	DestroySecretVersionFunc = func(ctx context.Context, req *pb.DestroySecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return nil, errors.New("failed to delete secret version")
 	}
 	t.Run("Failure", deleteSecretVersionTest(nil, "mySecrets", "myProjects", "", nil, true))
@@ -204,12 +205,12 @@ func TestClient_DisableSecret(t *testing.T) {
 		}
 	}
 
-	DisableSecretVersionFunc = func(ctx context.Context, req *pb.DisableSecretVersionRequest) (*pb.SecretVersion, error) {
+	DisableSecretVersionFunc = func(ctx context.Context, req *pb.DisableSecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
 	t.Run("Success", disableSecretTest(nil, "mySecrets", "myProjects", "1", secretVersionPositiveReturn, false))
 
-	DisableSecretVersionFunc = func(ctx context.Context, req *pb.DisableSecretVersionRequest) (*pb.SecretVersion, error) {
+	DisableSecretVersionFunc = func(ctx context.Context, req *pb.DisableSecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return nil, errors.New("failed to Disable Secret")
 	}
 	t.Run("Failure", disableSecretTest(nil, "mySecrets", "myProjects", "1", nil, true))
@@ -233,13 +234,13 @@ func TestClient_EnableSecret(t *testing.T) {
 		}
 	}
 
-	EnableSecretVersionFunc = func(ctx context.Context, req *pb.EnableSecretVersionRequest) (*pb.SecretVersion, error) {
+	EnableSecretVersionFunc = func(ctx context.Context, req *pb.EnableSecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
 	t.Run("Success", enableSecretTest(nil, "", "", "", secretVersionPositiveReturn, false))
 	t.Run("Failure", enableSecretTest(nil, "mySecrets", "myProjects", "1", secretVersionPositiveReturn, false))
 
-	EnableSecretVersionFunc = func(ctx context.Context, req *pb.EnableSecretVersionRequest) (*pb.SecretVersion, error) {
+	EnableSecretVersionFunc = func(ctx context.Context, req *pb.EnableSecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return nil, errors.New("failed to enable Secret")
 	}
 	t.Run("Failure", enableSecretTest(nil, "mySecrets", "myProjects", "1", nil, true))
@@ -263,7 +264,7 @@ func TestClient_GetSecret(t *testing.T) {
 		}
 	}
 
-	AccessSecretVersionFunc = func(ctx context.Context, req *pb.AccessSecretVersionRequest) (*pb.AccessSecretVersionResponse, error) {
+	AccessSecretVersionFunc = func(ctx context.Context, req *pb.AccessSecretVersionRequest, opts ...opt.CallOption) (*pb.AccessSecretVersionResponse, error) {
 		return &pb.AccessSecretVersionResponse{
 			Name:    "projects/myProjects/secrets/mySecrets/versions/latest",
 			Payload: &pb.SecretPayload{Data: []byte("mySecret")},
@@ -271,7 +272,7 @@ func TestClient_GetSecret(t *testing.T) {
 	}
 	t.Run("Success", getSecretTest(nil, "mySecret", "myProject", "", &pb.SecretPayload{Data: []byte("mySecret")}, false))
 
-	AccessSecretVersionFunc = func(ctx context.Context, req *pb.AccessSecretVersionRequest) (*pb.AccessSecretVersionResponse, error) {
+	AccessSecretVersionFunc = func(ctx context.Context, req *pb.AccessSecretVersionRequest, opts ...opt.CallOption) (*pb.AccessSecretVersionResponse, error) {
 		return nil, errors.New("failed to get secret")
 	}
 	t.Run("Failure", getSecretTest(nil, "mySecret", "myProject", "", nil, true))
@@ -295,12 +296,12 @@ func TestClient_GetSecretMetadata(t *testing.T) {
 			}
 		}
 	}
-	GetSecretVersionFunc = func(ctx context.Context, req *pb.GetSecretVersionRequest) (*pb.SecretVersion, error) {
+	GetSecretVersionFunc = func(ctx context.Context, req *pb.GetSecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
 	t.Run("Success", getSecretMetadataTest(nil, "mySecrets", "myProject", "1", secretVersionPositiveReturn, false))
 
-	GetSecretVersionFunc = func(ctx context.Context, req *pb.GetSecretVersionRequest) (*pb.SecretVersion, error) {
+	GetSecretVersionFunc = func(ctx context.Context, req *pb.GetSecretVersionRequest, opts ...opt.CallOption) (*pb.SecretVersion, error) {
 		return nil, errors.New("failed to Get Secret Version")
 	}
 	t.Run("Failure", getSecretMetadataTest(nil, "mySecrets", "myProject", "1", nil, true))
@@ -319,12 +320,12 @@ func TestClient_DeleteSecretAndVersions(t *testing.T) {
 		}
 	}
 
-	DeleteSecretFunc = func(ctx context.Context, req *pb.DeleteSecretRequest) error {
+	DeleteSecretFunc = func(ctx context.Context, req *pb.DeleteSecretRequest, opts ...opt.CallOption) error {
 		return errors.New("delete failed")
 	}
 	t.Run("Failure", deleteSecretAndVersionsTest(nil, "mySecret", "myProject", true))
 
-	DeleteSecretFunc = func(ctx context.Context, req *pb.DeleteSecretRequest) error {
+	DeleteSecretFunc = func(ctx context.Context, req *pb.DeleteSecretRequest, opts ...opt.CallOption) error {
 		return nil
 	}
 	t.Run("Success", deleteSecretAndVersionsTest(nil, "mySecret", "myProject", false))
@@ -345,11 +346,11 @@ func TestClient_SecretExists(t *testing.T) {
 
 		}
 	}
-	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error) {
+	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return secretPositiveReturn, nil
 	}
 	t.Run("Success", secretExists(nil, "my-secret", "my-project", true))
-	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error) {
+	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest, opts ...opt.CallOption) (*pb.Secret, error) {
 		return nil, errors.New("secret not found")
 	}
 	t.Run("Failure", secretExists(nil, "mysecret", "my-project", false))
